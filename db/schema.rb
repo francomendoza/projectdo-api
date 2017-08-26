@@ -10,10 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170823025749) do
+ActiveRecord::Schema.define(version: 20170826133814) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "categories", force: :cascade do |t|
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "mission_categories", force: :cascade do |t|
+    t.bigint "mission_id"
+    t.bigint "category_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_mission_categories_on_category_id"
+    t.index ["mission_id"], name: "index_mission_categories_on_mission_id"
+  end
 
   create_table "mission_due_dates", force: :cascade do |t|
     t.datetime "due_date"
@@ -30,5 +45,7 @@ ActiveRecord::Schema.define(version: 20170823025749) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "mission_categories", "categories"
+  add_foreign_key "mission_categories", "missions"
   add_foreign_key "mission_due_dates", "missions"
 end
