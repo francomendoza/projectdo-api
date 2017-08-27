@@ -1,10 +1,18 @@
 class MissionsController < ApplicationController
   def index
-
+    all_missions = Mission.all.map do |mission|
+      {
+        id: mission.id,
+        description: mission.description,
+        category_id: mission.mission_categories.first.id,
+        due_date: mission.mission_due_dates.order(:due_date).last.due_date
+      }
+    end
+    
+    render json: { data: all_missions }
   end
 
   def create
-    byebug
     new_mission = Mission.create!(mission_params)
 
     MissionDueDate.create!(
