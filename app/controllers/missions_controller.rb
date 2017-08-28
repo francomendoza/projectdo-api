@@ -8,26 +8,34 @@ class MissionsController < ApplicationController
         due_date: mission.mission_due_dates.order(:due_date).last.due_date
       }
     end
-    
+
     render json: { data: all_missions }
   end
 
   def create
     new_mission = Mission.create!(mission_params)
 
-    MissionDueDate.create!(
+    mission_due_date = MissionDueDate.create!(
       due_date_params.merge({
         due_date: DueDateOptionConverter.new.convert(due_date_params[:option]),
         mission_id: new_mission.id
       })
     )
 
-    MissionCategory.create!(
+    mission_category = MissionCategory.create!(
       mission_id: new_mission.id,
       category_id: category_params[:category_id]
     )
 
-    render json: { status: "SUCCESS" }
+    render json: {
+      status: "SUCCESS",
+      data: {
+        id: new_mission.id,
+        description: new_mission.description,
+        category_id: mission_category.category_id,
+        due_date: mission_due_date.due_date
+      }
+    }
   end
 
   private
