@@ -5,7 +5,8 @@ class MissionsController < ApplicationController
         id: mission.id,
         description: mission.description,
         category_id: mission.mission_categories.first.id,
-        due_date: mission.mission_due_dates.order(:due_date).last.due_date
+        due_date: mission.mission_due_dates.order(:due_date).last.due_date,
+        status: mission.mission_statuses.order(:created_at).last.description,
       }
     end
 
@@ -27,13 +28,19 @@ class MissionsController < ApplicationController
       category_id: category_params[:category_id]
     )
 
+    mission_status = MissionStatus.create!(
+      mission_id: new_mission.id,
+      description: 'standby'
+    )
+
     render json: {
       status: "SUCCESS",
       data: {
         id: new_mission.id,
         description: new_mission.description,
         category_id: mission_category.category_id,
-        due_date: mission_due_date.due_date
+        due_date: mission_due_date.due_date,
+        status: mission_status.description,
       }
     }
   end

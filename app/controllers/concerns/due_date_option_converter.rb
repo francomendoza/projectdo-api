@@ -4,9 +4,19 @@ class DueDateOptionConverter
     when 'EOD'
       now.end_of_day
     when 'EOWeek'
-      now.end_of_week - 2.days
+      # if its saturday, end of week should apply to next friday
+      if now.wday == 6
+        (now + 1.day).end_of_week - 2.days
+      else
+        now.end_of_week - 2.days
+      end
     when 'EOWeekend'
-      now.end_of_week
+      # if sunday, end of weekend should apply to next sunday
+      if now.wday == 0
+        (now + 1.day).end_of_week
+      else
+        now.end_of_week
+      end
     when 'EOMonth'
       now.end_of_month
     when 'EOYear'
