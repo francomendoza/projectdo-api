@@ -34,7 +34,7 @@ class MissionsController < ApplicationController
     )
 
     render json: {
-      status: "SUCCESS",
+      status: 'SUCCESS',
       data: {
         id: new_mission.id,
         description: new_mission.description,
@@ -42,6 +42,17 @@ class MissionsController < ApplicationController
         due_date: mission_due_date.due_date,
         status: mission_status.description,
       }
+    }
+  end
+
+  def update_status
+    MissionStatus.create!(
+      mission_id: update_status_params[:mission_id],
+      description: update_status_params[:status]
+    )
+
+    render json: {
+      status: 'SUCCESS'
     }
   end
 
@@ -56,5 +67,9 @@ class MissionsController < ApplicationController
 
   def category_params
     params.permit(:category_id)
+  end
+
+  def update_status_params
+    params.permit(:mission_id, :status)
   end
 end
