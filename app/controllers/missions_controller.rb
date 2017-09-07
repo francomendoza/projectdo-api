@@ -1,14 +1,28 @@
 class MissionsController < ApplicationController
   def index
-    all_missions = Mission.all.map do |mission|
-      {
-        id: mission.id,
-        description: mission.description,
-        category_id: mission.mission_categories.first.id,
-        due_date: mission.mission_due_dates.order(:due_date).last.due_date,
-        status: mission.mission_statuses.order(:created_at).last.description,
-      }
-    end
+    all_missions = Mission
+      .joins(:mission_statuses)
+      .where('mission_statuses.description != ?', 'complete')
+      .map do |mission|
+        {
+          id: mission.id,
+          description: mission.description,
+          category_id: mission
+            .mission_categories
+            .first
+            .id,
+          due_date: mission
+            .mission_due_dates
+            .order(:due_date)
+            .last
+            .due_date,
+          status: mission
+            .mission_statuses
+            .order(:created_at)
+            .last
+            .description,
+        }
+      end
 
     render json: { data: all_missions }
   end
