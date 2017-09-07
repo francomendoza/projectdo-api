@@ -3,6 +3,8 @@ class DueDateOptionConverter
     case option
     when 'EOD'
       now.end_of_day
+    when 'EODTomorrow'
+      (now + 1.day).end_of_day
     when 'EOWeek'
       # if its saturday, end of week should apply to next friday
       if now.wday == 6
