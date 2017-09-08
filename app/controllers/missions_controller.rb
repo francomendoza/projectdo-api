@@ -1,6 +1,7 @@
 class MissionsController < ApplicationController
   def index
     all_missions = Mission
+      .all
       .reduce([]) do |accum, mission|
         if mission.status.description != 'complete'
           accum.push({
