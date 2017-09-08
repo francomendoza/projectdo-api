@@ -1,27 +1,26 @@
 class MissionsController < ApplicationController
   def index
     all_missions = Mission
-      .joins(:mission_statuses)
-      .where('mission_statuses.description != ?', 'complete')
-      .map do |mission|
-        {
-          id: mission.id,
-          description: mission.description,
-          category_id: mission
-            .mission_categories
-            .first
-            .id,
-          due_date: mission
-            .mission_due_dates
-            .order(:due_date)
-            .last
-            .due_date,
-          status: mission
-            .mission_statuses
-            .order(:created_at)
-            .last
-            .description,
-        }
+      .reduce([]) do |accum, mission|
+        if mission.status.description != 'complete'
+          accum.push({
+            id: mission.id,
+            description: mission.description,
+            category_id: mission
+              .mission_categories
+              .first
+              .id,
+            due_date: mission
+              .mission_due_dates
+              .order(:due_date)
+              .last
+              .due_date,
+            status: mission
+              .status
+              .description,
+          })
+        end
+        accum
       end
 
     render json: { data: all_missions }
