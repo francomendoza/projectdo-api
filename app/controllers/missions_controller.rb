@@ -31,10 +31,9 @@ class MissionsController < ApplicationController
     new_mission = Mission.create!(mission_params)
 
     mission_due_date = MissionDueDate.create!(
-      due_date_params.merge({
-        due_date: DueDateOptionConverter.new.convert(due_date_params[:option]),
-        mission_id: new_mission.id
-      })
+      option: due_date_params[:option],
+      due_date: DateTime.parse(due_date_params[:datetime]),
+      mission_id: new_mission.id
     )
 
     mission_category = MissionCategory.create!(
@@ -76,7 +75,7 @@ class MissionsController < ApplicationController
   end
 
   def due_date_params
-    params.permit(:option)
+    params.require(:due_date).permit(:datetime, :option)
   end
 
   def category_params
