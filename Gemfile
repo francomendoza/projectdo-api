@@ -30,6 +30,8 @@ gem 'exponent-server-sdk',
   git: 'https://github.com/expo/exponent-server-sdk-ruby.git',
   branch: 'master'
 
+gem 'sidekiq'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

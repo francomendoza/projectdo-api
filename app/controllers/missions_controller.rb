@@ -46,6 +46,21 @@ class MissionsController < ApplicationController
       description: 'standby'
     )
 
+    notify_at = DateTime.now + 30.seconds
+
+    mission_notification = Notification.create!(
+      mission_id: new_mission.id,
+      title: 'Hello from controller',
+      body: "Remember #{new_mission.description}",
+      datetime: notify_at,
+      status: 'scheduled'
+    )
+
+    NotificationsWorker.perform_at(
+      notify_at,
+      notification_id: mission_notification.id
+    )
+
     render json: {
       status: 'SUCCESS',
       data: {

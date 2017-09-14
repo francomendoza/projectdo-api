@@ -8,4 +8,7 @@ Rails.application.routes.draw do
   post '/notifications/create', to: 'notifications#create'
 
   post '/push_tokens/create', to: 'push_tokens#create'
+
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
 end

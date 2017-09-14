@@ -54,6 +54,8 @@ ActiveRecord::Schema.define(version: 20170914131002) do
   end
 
   create_table "notifications", force: :cascade do |t|
+    t.string "title"
+    t.string "body"
     t.datetime "datetime"
     t.string "status"
     t.datetime "acknowledged_at"
