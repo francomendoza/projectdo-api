@@ -1,3 +1,11 @@
+GIT
+  remote: https://github.com/expo/exponent-server-sdk-ruby.git
+  revision: 41af925168225e66b3fba22af97df952a591ca46
+  branch: master
+  specs:
+    exponent-server-sdk (0.0.2)
+      httparty
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -46,6 +54,8 @@ GEM
     ffi (1.9.18)
     globalid (0.4.0)
       activesupport (>= 4.2.0)
+    httparty (0.15.6)
+      multi_xml (>= 0.5.2)
     i18n (0.8.6)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
@@ -61,6 +71,7 @@ GEM
     mime-types-data (3.2016.0521)
     mini_portile2 (2.2.0)
     minitest (5.10.3)
+    multi_xml (0.6.0)
     newrelic_rpm (4.0.0.332)
     nio4r (2.1.0)
     nokogiri (1.8.0)
@@ -123,6 +134,7 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
+  exponent-server-sdk!
   listen (>= 3.0.5, < 3.2)
   newrelic_rpm
   pg (~> 0.18)
