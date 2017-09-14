@@ -55,8 +55,6 @@ ActiveRecord::Schema.define(version: 20170914012924) do
 
   create_table "notifications", force: :cascade do |t|
     t.datetime "datetime"
-    t.string "client"
-    t.string "local_notification_id"
     t.string "status"
     t.datetime "acknowledged_at"
     t.bigint "mission_id"
