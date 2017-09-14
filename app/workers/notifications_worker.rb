@@ -3,8 +3,7 @@ class NotificationsWorker
 
   def perform(args)
     # Ping expo push notifications server
-    byebug
-    notification = Notification.find(args.fetch(:notification_id))
+    notification = Notification.find(args.fetch('notification_id'))
     exponent.publish(
       [
         {
