@@ -4,4 +4,6 @@ Rails.application.routes.draw do
   post '/missions/create', to: 'missions#create'
   get '/missions', to: 'missions#index'
   post '/missionstatus/update', to: 'missions#update_status'
+
+  post '/notifications/create', to: 'notifications#create'
 end
