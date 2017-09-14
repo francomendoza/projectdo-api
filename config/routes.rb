@@ -6,4 +6,6 @@ Rails.application.routes.draw do
   post '/missionstatus/update', to: 'missions#update_status'
 
   post '/notifications/create', to: 'notifications#create'
+
+  post '/push_tokens/create', to: 'push_tokens#create'
 end

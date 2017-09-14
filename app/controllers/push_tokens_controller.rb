@@ -5,6 +5,7 @@ class PushTokensController < ApplicationController
       PushToken.create!(
         value: push_token_params[:token],
       )
+      puts 'new token created!'
     end
 
     render json: {
