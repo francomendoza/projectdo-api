@@ -5,8 +5,6 @@ Rails.application.routes.draw do
   get '/missions', to: 'missions#index'
   post '/missionstatus/update', to: 'missions#update_status'
 
-  post '/notifications/create', to: 'notifications#create'
-
   post '/push_tokens/create', to: 'push_tokens#create'
 
   require 'sidekiq/web'
