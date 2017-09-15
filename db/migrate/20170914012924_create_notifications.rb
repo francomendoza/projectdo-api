@@ -6,6 +6,7 @@ class CreateNotifications < ActiveRecord::Migration[5.1]
       t.datetime :datetime
       t.string :status
       t.datetime :acknowledged_at
+      t.string :job_id
       t.references :mission, foreign_key: true
 
       t.timestamps

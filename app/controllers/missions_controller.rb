@@ -72,6 +72,8 @@ class MissionsController < ApplicationController
         notify_at_datetime,
         notification_id: mission_notification.id
       )
+
+      mission_notification.update(job_id: notification_job_id)
     end
 
     render json: {
