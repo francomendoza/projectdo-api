@@ -10,6 +10,9 @@ class NotificationsWorker
           to: push_token,
           title: notification.title,
           body: notification.body,
+          data: {
+            notification_id: notification.id
+          }
         }
       ]
     )
