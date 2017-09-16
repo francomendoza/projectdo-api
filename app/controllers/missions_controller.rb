@@ -93,8 +93,13 @@ class MissionsController < ApplicationController
       mission_id: update_status_params[:mission_id],
       description: update_status_params[:status]
     )
-    # add to complete action, get all IDs from backend
-    # of remaining notifications and dismiss them
+
+    if update_status_params[:status] == 'complete'
+      Notification
+        .where(mission_id: update_status_params[:mission_id])
+        .where('datetime > ?', DateTime.now.beginning_of_minute)
+        .destroy_all
+    end
 
     render json: {
       status: 'SUCCESS'
