@@ -7,7 +7,9 @@ namespace :notifications do
       .each do |mission|
         mission_due_date = mission.mission_due_dates.first.due_date
         if mission.status.description != 'complete' &&
-            mission_due_date > now && mission.notifications.empty?
+            mission_due_date && mission_due_date > now &&
+            mission.notifications.empty?
+            
           puts "Adding notifications to #{mission.description}"
           notify_at_datetimes = GenerateNotificationTimes
             .new(due_date: mission_due_date)
