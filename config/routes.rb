@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   post '/missions/create', to: 'missions#create'
   get '/missions', to: 'missions#index'
   post '/missionstatus/update', to: 'missions#update_status'
+  post '/missionduedate/update', to: 'missions#update_duedate'
 
   post '/push_tokens/create', to: 'push_tokens#create'
 

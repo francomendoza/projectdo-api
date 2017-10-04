@@ -13,7 +13,7 @@ class MissionsController < ApplicationController
               .id,
             due_date: mission
               .mission_due_dates
-              .order(:due_date)
+              .order(:created_at)
               .last
               .due_date,
             status: mission
@@ -68,12 +68,14 @@ class MissionsController < ApplicationController
         status: 'scheduled'
       )
 
-      notification_job_id = NotificationsWorker.perform_at(
-        notify_at_datetime,
-        notification_id: mission_notification.id
-      )
+      if Rails.env.production?
+        notification_job_id = NotificationsWorker.perform_at(
+          notify_at_datetime,
+          notification_id: mission_notification.id
+        )
+        mission_notification.update(job_id: notification_job_id)
+      end
 
-      mission_notification.update(job_id: notification_job_id)
     end
 
     render json: {
@@ -106,6 +108,55 @@ class MissionsController < ApplicationController
     }
   end
 
+  def update_duedate
+    mission_due_date = MissionDueDate.create!(
+      mission_id: update_duedate_params[:mission_id],
+      due_date: update_duedate_params[:due_date],
+      option: update_duedate_params[:option]
+    )
+
+    due_date = mission_due_date.due_date
+
+    Notification
+      .where(mission_id: update_duedate_params[:mission_id])
+      .where('datetime > ?', DateTime.now.beginning_of_minute)
+      .destroy_all
+
+    notify_at_datetimes = GenerateNotificationTimes.new(
+      due_date: due_date
+    ).generate
+
+    notify_at_datetimes.each do |notify_at_datetime|
+      # these are active support timewithzone so difference is in seconds
+      day_left_float = (due_date - notify_at_datetime) / 1.day
+      hours_left = (day_left_float * 24).to_i
+      display_time = hours_left < 24 ?
+        "#{hours_left} #{'hour'.pluralize(hours_left)}" :
+        "#{day_left_float.to_i} #{'day'.pluralize(day_left_float.to_i)}"
+
+      mission_notification = Notification.create!(
+        mission_id: update_duedate_params[:mission_id],
+        title: 'YO From Mission Control',
+        body: "Don't forget to #{Mission.find(update_duedate_params[:mission_id]).description}! You have #{display_time} left!",
+        datetime: notify_at_datetime,
+        status: 'scheduled'
+      )
+
+      if Rails.env.production?
+        notification_job_id = NotificationsWorker.perform_at(
+          notify_at_datetime,
+          notification_id: mission_notification.id
+        )
+        mission_notification.update(job_id: notification_job_id)
+      end
+
+    end
+
+    render json: {
+      status: 'SUCCESS'
+    }
+  end
+
   private
   def mission_params
     params.permit(:description)
@@ -121,5 +172,9 @@ class MissionsController < ApplicationController
 
   def update_status_params
     params.permit(:mission_id, :status)
+  end
+
+  def update_duedate_params
+    params.permit(:mission_id, :due_date, :option)
   end
 end
