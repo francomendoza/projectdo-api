@@ -3,7 +3,7 @@ class MissionsController < ApplicationController
     all_missions = Mission
       .all
       .reduce([]) do |accum, mission|
-        if mission.status.description != 'complete'
+        if mission.status.description == 'standby'
           accum.push({
             id: mission.id,
             description: mission.description,
@@ -101,7 +101,7 @@ class MissionsController < ApplicationController
       description: update_status_params[:status]
     )
 
-    if update_status_params[:status] == 'complete'
+    if update_status_params[:status] == 'complete' || update_status_params[:status] == 'aborted'
       Notification
         .where(mission_id: update_status_params[:mission_id])
         .where('datetime > ?', DateTime.now.beginning_of_minute)
