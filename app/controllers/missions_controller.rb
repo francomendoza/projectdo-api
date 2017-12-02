@@ -33,7 +33,7 @@ class MissionsController < ApplicationController
 
     mission_due_date = MissionDueDate.create!(
       option: due_date_params[:option],
-      due_date: DateTime.parse(due_date_params[:datetime]),
+      due_date: parsed_due_date,
       mission_id: new_mission_id
     )
     due_date = mission_due_date.due_date
@@ -48,9 +48,14 @@ class MissionsController < ApplicationController
       description: 'standby'
     )
 
-    notify_at_datetimes = GenerateNotificationTimes.new(
-      due_date: due_date
-    ).generate
+    if due_date
+      notify_at_datetimes = GenerateNotificationTimes.new(
+        due_date: due_date
+      ).generate
+    else
+      # for now dont generate reminders for missions that'll happen eventually
+      notify_at_datetimes = []
+    end
 
     notify_at_datetimes.each do |notify_at_datetime|
       # these are active support timewithzone so difference is in seconds
@@ -176,5 +181,13 @@ class MissionsController < ApplicationController
 
   def update_duedate_params
     params.permit(:mission_id, :due_date, :option)
+  end
+
+  def parsed_due_date
+    if due_date_params[:datetime]
+      DateTime.parse(due_date_params[:datetime])
+    else
+      nil
+    end
   end
 end
