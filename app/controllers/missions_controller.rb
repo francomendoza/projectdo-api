@@ -127,9 +127,14 @@ class MissionsController < ApplicationController
       .where('datetime > ?', DateTime.now.beginning_of_minute)
       .destroy_all
 
-    notify_at_datetimes = GenerateNotificationTimes.new(
-      due_date: due_date
-    ).generate
+    if due_date
+      notify_at_datetimes = GenerateNotificationTimes.new(
+        due_date: due_date
+      ).generate
+    else
+      # for now dont generate reminders for missions that'll happen eventually
+      notify_at_datetimes = []
+    end
 
     notify_at_datetimes.each do |notify_at_datetime|
       # these are active support timewithzone so difference is in seconds
